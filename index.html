@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS Resume Checker - Optimize Your Resume for Applicant Tracking Systems</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        ul {
+            list-style: none;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        .nav-links li a {
+            color: white;
+            transition: opacity 0.3s;
+        }
+        .nav-links li a:hover {
+            opacity: 0.8;
+        }
+
+        /* Hero Section (Homepage) */
+        #hero {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            text-align: center;
+            padding: 120px 2rem 80px;
+            margin-top: 80px; /* Account for fixed header */
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #007bff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Upload Section */
+        #upload {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        .upload-area {
+            border: 3px dashed #007bff;
+            border-radius: 10px;
+            padding: 4rem 2rem;
+            margin: 2rem 0;
+            background: white;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #0056b3;
+        }
+        .upload-area.dragover {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        .upload-icon {
+            font-size: 4rem;
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        #dummy-resumes {
+            margin-top: 2rem;
+        }
+        .dummy-link {
+            display: inline-block;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            background: #e9ecef;
+            border-radius: 5px;
+            color: #007bff;
+        }
+
+        /* Analysis Dashboard */
+        #dashboard {
+            display: none;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .score-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .ats-score {
+            font-size: 4rem;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .keyword-match {
+            font-size: 2rem;
+            color: #ffc107;
+        }
+        .issues-list, .suggestions-list {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .issues-list h3, .suggestions-list h3 {
+            color: #dc3545;
+            margin-bottom: 1rem;
+        }
+        .suggestions-list h3 {
+            color: #007bff;
+        }
+        ul {
+            list-style: disc;
+            padding-left: 2rem;
+        }
+
+        /* Tips Section */
+        #tips {
+            background: #e9ecef;
+            padding: 4rem 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .tip-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* About ATS */
+        #about {
+            padding: 4rem 2rem;
+            background: white;
+        }
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Contact Form */
+        #contact {
+            background: #e9ecef;
+            padding: 4rem 2rem;
+        }
+        form {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        input, textarea {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        .privacy {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Simple mobile nav - could add hamburger */
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">ATS Resume Checker</div>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#upload">Upload</a></li>
+                <li><a href="#tips">Tips</a></li>
+                <li><a href="#about">About ATS</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <div class="hero">
+            <h1>Get Your Resume ATS-Ready in Seconds!</h1>
+            <p>Upload your resume and let our AI-powered tool analyze it for Applicant Tracking Systems (ATS). Get instant scores, keyword matches, and personalized suggestions to boost your job application success.</p>
+            <a href="#upload" class="cta-button">Start Analyzing Now</a>
+        </div>
+    </section>
+
+    <section id="upload">
+        <h2>Upload Your Resume</h2>
+        <p>Supported formats: PDF or DOCX. For testing, try our dummy examples below.</p>
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📄</div>
+            <p>Drag and drop your resume here or click to browse</p>
+            <input type="file" id="fileInput" accept=".pdf,.docx">
+        </div>
+        <div id="dummy-resumes">
+            <p>Dummy Resume Examples for Testing:</p>
+            <a href="#" class="dummy-link" onclick="simulateUpload('good')">Good ATS Resume (PDF)</a>
+            <a href="#" class="dummy-link" onclick="simulateUpload('bad')">Poor ATS Resume (PDF)</a>
+        </div>
+    </section>
+
+    <section id="dashboard">
+        <h2>Your Resume Analysis</h2>
+        <div class="score-card">
+            <div class="ats-score" id="atsScore">85</div>
+            <p>ATS Compatibility Score (0-100)</p>
+        </div>
+        <div class="score-card">
+            <div class="keyword-match" id="keywordMatch">78%</div>
+            <p>Keyword Match Percentage</p>
+        </div>
+        <div class="issues-list">
+            <h3>Formatting Issues Detected</h3>
+            <ul id="issuesList">
+                <li>Non-standard font detected (use Arial or Times New Roman)</li>
+                <li>Table used in layout – ATS may not parse correctly</li>
+            </ul>
+        </div>
+        <div class="suggestions-list">
+            <h3>Suggestions for Improvement</h3>
+            <ul id="suggestionsList">
+                <li>Add more job-specific keywords like "project management" and "data analysis"</li>
+                <li>Simplify sections with bullet points</li>
+                <li>Ensure contact info is at the top in plain text</li>
+            </ul>
+        </div>
+        <button onclick="resetUpload()" class="cta-button" style="display: inline-block; width: auto;">Analyze Another Resume</button>
+    </section>
+
+    <section id="tips">
+        <div class="container">
+            <h2>Actionable Tips for ATS Compatibility</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h3>Use Standard Fonts</h3>
+                    <p>Stick to Arial, Calibri, or Times New Roman (10-12pt) to ensure readability by ATS software.</p>
+                </div>
+                <div class="tip-card">
+                    <h3>Avoid Tables and Graphics</h3>
+                    <p>ATS can't parse complex layouts. Use simple text-based sections instead.</p>
+                </div>
+                <div class="tip-card">
+                    <h3>Include Relevant Keywords</h3>
+                    <p>Scan the job description and incorporate exact phrases like skills and qualifications.</p>
+                </div>
+                <div class="tip-card">
+                    <h3>Save as PDF or DOCX</h3>
+                    <p>These formats are widely supported. Name your file professionally, e.g., "FirstName_LastName_Resume.pdf".</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about-content">
+            <h2>What is ATS and Why Does It Matter?</h2>
+            <p>Applicant Tracking Systems (ATS) are software used by 99% of Fortune 500 companies to manage job applications. They scan resumes for keywords, formatting, and structure before a human recruiter sees them. A non-ATS-friendly resume could get rejected automatically – our tool helps you pass the first hurdle!</p>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Contact & Feedback</h2>
+        <form id="feedbackForm">
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea rows="5" placeholder="Share your feedback or questions about the tool..." required></textarea>
+            <button type="submit">Send Feedback</button>
+        </form>
+    </section>
+
+    <!-- <footer>
+        <div class="privacy">
+            <h3>Privacy Disclaimer</h3>
+            <p>Your uploaded resumes are processed securely and not stored on our servers beyond the analysis session. We do not share your data with third parties. All processing is done in-memory for privacy. By using this tool, you agree to our terms. For more details, contact us.</p>
+            <p>&copy; 2023 ATS Resume Checker. All rights reserved.</p>
+        </div>
+    </footer> -->
+
+    <script>
+        // Drag and Drop Upload
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFile);
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadArea.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            uploadArea.classList.remove('dragover');
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFile() {
+            handleFiles(fileInput.files);
+        }
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                // Simulate analysis (in real app, send to backend)
+                simulateAnalysis();
+            }
+        }
+
+        // Simulate Upload with Dummy Data
+        function simulateUpload(type) {
+            if (type === 'good') {
+                document.getElementById('atsScore').textContent = '95';
+                document.getElementById('keywordMatch').textContent = '92%';
+                // Update lists with good data
+                document.getElementById('issuesList').innerHTML = '<li>No major issues detected!</li>';
+                document.getElementById('suggestionsList').innerHTML = '<li>Excellent! Consider adding quantifiable achievements.</li>';
+            } else {
+                document.getElementById('atsScore').textContent = '45';
+                document.getElementById('keywordMatch').textContent = '32%';
+                // Update lists with bad data
+                document.getElementById('issuesList').innerHTML = '<li>Heavy use of tables and images</li><li>Custom fonts not supported</li><li>Missing keywords</li>';
+                document.getElementById('suggestionsList').innerHTML = '<li>Remove graphics and use standard formatting</li><li>Add keywords from job description</li><li>Restructure with clear headings</li>';
+            }
+            showDashboard();
+        }
+
+        // Simulate Analysis
+        function simulateAnalysis() {
+            // Random dummy scores for demo
+            const score = Math.floor(Math.random() * 100);
+            const match = Math.floor(Math.random() * 100) + '%';
+            document.getElementById('atsScore').textContent = score;
+            document.getElementById('keywordMatch').textContent = match;
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('upload').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('dashboard').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        function resetUpload() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('upload').style.display = 'block';
+            fileInput.value = '';
+            window.scrollTo({ top: document.getElementById('upload').offsetTop - 100, behavior: 'smooth' });
+        }
+
+        // Feedback Form
+        document.getElementById('feedbackForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your feedback! (This is a demo – in production, it would send via API.)');
+            e.target.reset();
+        });
+
+        // Smooth Scrolling for Nav Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
